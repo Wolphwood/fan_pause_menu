@@ -1,0 +1,13 @@
+{
+    "menu.button.settings": "Settings",
+    "menu.button.map"     : "Map",
+    "menu.button.quit"    : "Settings",
+
+    "menu.information.user"        : "User :",
+    "menu.information.job"         : "Job :",
+    "menu.information.money"       : "Money :",
+    "menu.information.time_played" : "Time played :",
+    "menu.information.id"          : "ID :",
+
+    "": ""
+}
