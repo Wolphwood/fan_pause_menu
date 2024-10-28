@@ -1,13 +1,16 @@
 {
-    "menu.button.settings": "Settings",
-    "menu.button.map"     : "Map",
-    "menu.button.quit"    : "Settings",
+    "menu.button.settings" : "Settings",
+    "menu.button.map"      : "Map",
+    "menu.button.quit"     : "Quit",
+    "menu.button.report"   : "Report",
+    "menu.button.announces": "Announces",
 
-    "menu.information.user"        : "User :",
-    "menu.information.job"         : "Job :",
-    "menu.information.money"       : "Money :",
-    "menu.information.time_played" : "Time played :",
-    "menu.information.id"          : "ID :",
+    "menu.information.player_count": "%a Player(s)",
+    "menu.information.user"        : "User",
+    "menu.information.job"         : "Job",
+    "menu.information.money"       : "Money",
+    "menu.information.time_played" : "Time played",
+    "menu.information.id"          : "ID",
 
     "": ""
 }

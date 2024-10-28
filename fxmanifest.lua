@@ -17,7 +17,9 @@ server_scripts ({
 
 shared_script {
     '@es_extended/imports.lua',
-	'config.lua'
+    '@ox_lib/init.lua',
+	'utils.lua',
+	'config.lua',
 }
 
 client_script {
@@ -25,7 +27,8 @@ client_script {
 }
 
 files({
-    "ui/dist/**",
+    "locales/**",
+    "nui/dist/**",
 })
 
-ui_page("ui/dist/index.html")
+ui_page("nui/dist/index.html")

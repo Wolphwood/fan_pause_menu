@@ -4,16 +4,16 @@ local isMenuActive = false
 
 Citizen.CreateThread(function()
     while true do
-
+        
         if not openActive then 
             DisplayRadar(true) -- Set Radar online
-        end 
+        end
 
         if isMenuActive and not openActive then 
             SetPauseMenuActive(true) -- Set default pauseMenu true
         else 
             SetPauseMenuActive(false) -- Set default pauseMenu false
-        end 
+        end
 
         if (IsControlJustPressed(1,200) or IsControlJustPressed(1,199)) and not openActive then 
             openActive = true -- Set true if it's not true
@@ -24,27 +24,27 @@ Citizen.CreateThread(function()
             -- Send Datas 
             SendNUIMessage({
                 action = "uiEnabled",
-                ServerName = config.ServerName,
-                Sections = config.Sections,
-                Buttons = config.Buttons,
-                rules = config.rules,
-                placeHolders = config.placeHolders,
-                discordLink = config.discordLink,
-                timeText = config.time,
-                language = config.server_language
+                -- ServerName = config.ServerName,
+                -- Sections = config.Sections,
+                -- Buttons = config.Buttons,
+                -- rules = config.rules,
+                -- placeHolders = config.placeHolders,
+                -- discordLink = config.discordLink,
+                -- timeText = config.time,
+                -- language = config.server_language
             })
 
-            SetNuiFocus(true, true)
+            -- SetNuiFocus(true, true)
 
             -- Get PlayersData 
-            ESX.TriggerServerCallback('getPlayerData', function(datas)
-                SendNUIMessage({playerDatas = datas, activePlayersNumber = #GetActivePlayers()})
-            end)
+            -- ESX.TriggerServerCallback('getPlayerData', function(datas)
+            --     SendNUIMessage({playerDatas = datas, activePlayersNumber = #GetActivePlayers()})
+            -- end)
 
             -- Get Playtime  
-            ESX.TriggerServerCallback('getPlayTime', function(time)
-                SendNUIMessage({onlinePlayTime = time})
-            end)
+            -- ESX.TriggerServerCallback('getPlayTime', function(time)
+            --     SendNUIMessage({onlinePlayTime = time})
+            -- end)
         end 
 
         -- Resume game if you press ESCAPE and pauseMenu is active 
@@ -60,7 +60,7 @@ end)
 function resumeGame()
     openActive = false
     isMenuActive = false
-    SendNUIMessage({action = "uiDisabled",})
+    SendNUIMessage({action = "uiDisabled"})
     SetNuiFocus(false, false)
 end
 
@@ -69,7 +69,7 @@ RegisterNUICallback('resumeGame', resumeGame)
 
 -- ShowMap
 RegisterNUICallback('showMap', function()
-    ActivateFrontendMenu(GetHashKey('FE_MENU_VERSION_MP_PAUSE'),0,-1)
+    ActivateFrontendMenu(GetHashKey('FE_MENU_VERSION_MP_PAUSE'), 0, -1)
     isMenuActive = true
     SendNUIMessage({action = "uiDisabled",})
     SetNuiFocus(false, false)
@@ -91,4 +91,11 @@ end)
 -- Get Report
 RegisterNUICallback('sendReport', function(reportMessage)
     ESX.TriggerServerCallback('sendReportToDiscord', function(source) end, reportMessage)
+end)
+
+
+-- Callback pour le NUI côté client
+RegisterNUICallback("getLocales", function(data, cb)
+    local locales = lib.callback.await('getLangFiles')
+    cb(locales)
 end)
