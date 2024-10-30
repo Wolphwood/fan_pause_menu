@@ -12,5 +12,25 @@
     "menu.information.time_played" : "Time played",
     "menu.information.id"          : "ID",
 
+    "menu.announce.title"          : "Announcments & Informations",
+
+    "job.ambulance.name" : "EMS",
+    "job.bar.name"       : "Bartender",
+    "job.church.name"    : "Priest",
+    "job.coffee.name"    : "Barista",
+    "job.detective.name" : "Private Detective",
+    "job.gang1.name"     : "Gang1",
+    "job.gang2.name"     : "Gang2",
+    "job.gang3.name"     : "Atomkraft",
+    "job.gangling.name"  : "Little Hit",
+    "job.magicshop.name" : "Phantom's Love Insight",
+    "job.mechanic.name"  : "Mechanic",
+    "job.police.name"    : "LSPD",
+    "job.rallye.name"    : "Event Organizer",
+    "job.reporter.name"  : "Reporter",
+    "job.restaurant.name": "Restaurant",
+    "job.unemployed.name": "Unemployed",
+    "job.winemaker.name" : "Winemaker",
+
     "": ""
 }

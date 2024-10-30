@@ -13,22 +13,22 @@
 
       <div class="frame">
         <div class="back-text">{{ GetLocale('menu.information.job') }}</div>
-        <div class="text">{{ data.job ?? 'Jobless' }}</div>
+        <div class="text">{{ GetLocale(`job.${data.job ?? 'unemployed'}.name`, null, { default: (data.job ?? 'unemployed').ucFirst() }) }}</div>
       </div>
 
       <div class="frame">
         <div class="back-text">{{ GetLocale('menu.information.money') }}</div>
-        <div class="text">{{ FormatMoney(data.money ?? 999999) }}</div>
+        <div class="text">{{ FormatMoney(data.money ?? 0) }}</div>
       </div>
       
       <div class="frame">
         <div class="back-text">{{ GetLocale('menu.information.time_played') }}</div>
-        <div class="text">{{ FormatTime(data.time ?? 98765) }}</div>
+        <div class="text">{{ FormatTime(data.time ?? 0) }}</div>
       </div>
 
       <div class="frame">
         <div class="back-text">{{ GetLocale('menu.information.id') }}</div>
-        <div class="text">{{ data.id ?? 0 }}</div>
+        <div class="text">{{ data.id ?? -1 }}</div>
       </div>
     </div>
   </div>
@@ -77,7 +77,6 @@
     },
     methods: {
       GetLocale,
-
       FormatMoney, FormatTime
     }
   };

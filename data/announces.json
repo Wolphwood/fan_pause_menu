@@ -1,0 +1,36 @@
+[
+    {
+        "title": "Coucou les copains",
+        "subtitle": "Sous titre de bz",
+        "content": [
+            {
+                "style": "add",
+                "value": "+ Ajout d'un truc de fou"
+            },
+            {
+                "style": "remove",
+                "value": "- Suppression d'un truc de fou"
+            },
+            {
+                "style": "change",
+                "value": "* Ceci est un changement aka un fix"
+            },
+            {
+                "style": "comment",
+                "italic": true,
+                "value": "Ceci est un commentaire"
+            },
+            {
+                "style": "comment",
+                "bold": true,
+                "value": "Ceci est un commentaire"
+            },
+            {
+                "value": "Ceci est un texte par défaut :))"
+            },
+            {
+                "value": "<h1>mes couilles en string</h1>"
+            }
+        ]
+    }
+]

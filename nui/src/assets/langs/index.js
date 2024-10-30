@@ -2,8 +2,6 @@ let LANGS = {};
 let default_lang = 'en';
 let current_locale = default_lang;
 
-console.log("IMPORT LANG.JS")
-
 function GetDefaultLang() {
     return default_lang;
 }
@@ -23,16 +21,16 @@ function RegisterLocale(code, locale) { // ⚠ Will override existings keys
 }
 
 function GetRawLocale(key, options = {}) {
-    if (!LANGS[current_locale]) return key;
-    if (!LANGS[current_locale][key]) return key;
+    if (!LANGS[options.lang ?? current_locale]) return null;
+    if (!LANGS[options.lang ?? current_locale][key]) return null;
 
-    let value = LANGS[current_locale][key];
+    let value = LANGS[options.lang ?? current_locale][key];
 
     if (Array.isArray(value)) {
         if (options.AllowArray === true) {
-            return LANGS[current_locale][key];
+            return LANGS[options.lang ?? current_locale][key];
         } else {
-            return LANGS[current_locale][key].randomElement();
+            return LANGS[options.lang ?? current_locale][key].randomElement();
         }
     }
 
@@ -40,8 +38,9 @@ function GetRawLocale(key, options = {}) {
 }
 
 function FormatString(string, args = []) {
-    if (typeof args === 'undefined') args = [];
+    if (typeof args === 'undefined' || args == null) return string;
     if (!Array.isArray(args)) args = [ args ];
+    if (args.length === 0) return string;
 
     let index = 0;
     return string.replace(/\%([asdifuxX])/g, (match, specifier) => {
@@ -77,11 +76,12 @@ function FormatString(string, args = []) {
 }
 
 function GetLocale(key, args = [], options = {}) {
-    if (!LANGS[current_locale]) return key;
-    if (!LANGS[current_locale][key]) return key;
+    if (!LANGS[options.lang ?? current_locale]) return options.default ?? key;
+    if (!LANGS[options.lang ?? current_locale][key]) return options.default ?? key;
     
-    let value = GetRawLocale(key, options);
-    
+    let value = GetRawLocale(key, options) ?? GetRawLocale(key, Object.assign({}, options, { lang: default_lang }));
+    if (!value) return options.default ?? key;
+
     if (Array.isArray(value)) {
         return value.map(s => FormatString(s, args));
     } else {

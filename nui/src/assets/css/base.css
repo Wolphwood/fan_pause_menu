@@ -6,6 +6,10 @@
 
   --primary-font-color: white;
 
+  --remove-font-color : #FF0000;
+  --add-font-color    : #00C700;
+  --edit-font-color   : #cfcfcf;
+  --comment-font-color: #cfcfcf;
   
   color: var(--primary-font-color);
 }
@@ -31,11 +35,11 @@
   box-sizing: border-box;
   margin: 0;
   position: relative;
+  user-select: none;
 }
 
 body {
   min-height: 100vh;
-  transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

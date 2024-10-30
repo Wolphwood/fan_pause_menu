@@ -1,0 +1,7 @@
+config = {
+    goodbye = "See you next time !",
+    announces = "data/announces/json", -- default
+    serverCode = '.....',
+    language = 'en',
+    verbose = false
+}

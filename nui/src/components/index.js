@@ -4,6 +4,8 @@ import wButton from './main/Button.vue'
 import Rules from './main/Rules.vue'
 import Report from './main/Report.vue'
 
+import AnnounceElement from './announces/AnnounceElement.vue'
 
 
-export { wHeader, Section, wButton, Rules, Report }
+
+export { wHeader, Section, wButton, Rules, Report, AnnounceElement }

@@ -6,11 +6,31 @@
     "menu.button.announces": "Annonces",
 
     "menu.information.player_count": "%a Joueur•s",
-    "menu.information.user"        : "User",
-    "menu.information.job"         : "Job",
-    "menu.information.money"       : "Money",
-    "menu.information.time_played" : "Time played",
+    "menu.information.user"        : "Joueur",
+    "menu.information.job"         : "Métierr",
+    "menu.information.money"       : "Argent",
+    "menu.information.time_played" : "Temp de jeu",
     "menu.information.id"          : "ID",
+
+    "menu.announce.title"          : "Annonces & Informations",
+
+    "job.ambulance.name" : "EMS",
+    "job.bar.name"       : "Barman",
+    "job.church.name"    : "Pasteur",
+    "job.coffee.name"    : "Barista",
+    "job.detective.name" : "Détective privé",
+    "job.gang1.name"     : "Gang1",
+    "job.gang2.name"     : "Gang2",
+    "job.gang3.name"     : "Atomkraft",
+    "job.gangling.name"  : "Petite Frappe",
+    "job.magicshop.name" : "Phantom's love Insight",
+    "job.mechanic.name"  : "Mecanicien",
+    "job.police.name"    : "LSPD",
+    "job.rallye.name"    : "Organisateur d'èvénement",
+    "job.reporter.name"  : "Reporter",
+    "job.restaurant.name": "Restaurant",
+    "job.unemployed.name": "Sans Emplois",
+    "job.winemaker.name" : "Vigneron",
 
     "": ""
 }

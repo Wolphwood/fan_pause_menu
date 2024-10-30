@@ -24,6 +24,13 @@ Math.clamp = function(v, min, max) {
     return Math.max(min ?? v, Math.min(v, max ?? v));
 }
 
+Object.defineProperty(String.prototype, 'ucFirst', {
+  value: function() {
+    return this.slice(0,1).toUpperCase() + this.slice(1).toLowerCase();
+  },
+  enumerable: false
+});
+
 Object.defineProperty(Number.prototype, 'clamp', {
     value: function(min, max) {
         return Math.clamp(this, min, max);
@@ -46,4 +53,53 @@ Object.defineProperty(Array.prototype, 'getRandomElement', {
     enumerable: false
 });
 
-export { isFivemNUI, getRandomRange, getRandomRangeFloor, getRandomRangeCeil, getRandomRangeRound }
+/**
+ * Simple object check.
+ * @param item
+ * @returns {boolean}
+ */
+function isObject(item) {
+  return (item && typeof item === 'object' && !Array.isArray(item));
+}
+  
+/**
+ * Deep merge two objects.
+ * @param target
+ * @param ...sources
+ */
+function mergeDeep(target, ...sources) {
+  if (!sources.length) return target;
+  const source = sources.shift();
+
+  if (isObject(target) && isObject(source)) {
+    for (const key in source) {
+      if (isObject(source[key])) {
+        if (!target[key]) Object.assign(target, { [key]: {} });
+        mergeDeep(target[key], source[key]);
+      } else {
+        Object.assign(target, { [key]: source[key] });
+      }
+    }
+  }
+
+  return mergeDeep(target, ...sources);
+}
+
+function calculateMapPosPercentage(x, y) {
+  let min_x = -4000;
+  let max_x = 4500;
+  
+  let min_y = -4000;
+  let max_y = 8000;
+
+  let rx = x - min_x;
+  let ry = y - min_y;
+
+  return {
+      x: rx / (max_x - min_x),
+      y: ry / (max_y - min_y),
+  }
+
+}
+
+export { isFivemNUI, getRandomRange, getRandomRangeFloor, getRandomRangeCeil, getRandomRangeRound, isObject, mergeDeep, calculateMapPosPercentage }

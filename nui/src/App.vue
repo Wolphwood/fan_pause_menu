@@ -1,99 +1,81 @@
 <template>
-  <div class="menu_container animate__animated animate__fast" :class="[animationState ? 'animate__fadeIn' : 'animate__fadeOut']" v-if="!isFetchingData && isUIOpen" :z="lang">
+  <div class="menu_container animate__animated animate__fast" :class="[animationState ? 'animate__fadeIn' : 'animate__fadeOut']" v-if="!isFetchingData && isUIOpen">
     <div class="menu animate__animated animate__fast" :class="[animationState ? 'animate__zoomIn' : 'animate__fadeOut']">
-      <div class="columns">
+      <div v-if="page == 'main'" class="columns">
         <div class="column">
-          <SectionInformation :data="data.information ?? {}"/>
+          <SectionInformation :data="data ?? {}"/>
         </div>
         <div class="column">
-          <SectionGame/>
+          <SectionGame :data="data ?? {}"  :setPage="setPage"/>
         </div>
       </div>
+      <SectionAnnounces v-if="page == 'announces'" :data="announces ?? []" :setPage="setPage"/>
     </div>
   </div>
 </template>
 
 <script>
   // import { Header, Section, wButton, Rules, Report } from './components';
-  import { RegisterLocale, GetRawLocale, GetLocale, SetCurrentLang, _getLangs } from './assets/langs';
-  import { isFivemNUI } from '@/assets/js/utils';
+  import { RegisterLocale, SetCurrentLang, _getLangs } from '@/assets/langs';
+  import { DebugImportLangFiles, GetDebugData } from '@/assets/js/debug'
+  import { isFivemNUI, mergeDeep } from '@/assets/js/utils';
+  import { ResumeGame, FetchLocales, FetchData, FetchSettings } from '@/assets/js/events'
 
-  import SectionInformation from './vues/Informations.vue'
-  import SectionGame from './vues/Game.vue'
-
-  // if (!isFivemNUI()) {
-  //   await import('../../locales/en.json')
-  //     .then(lang => {
-  //       RegisterLocale('en', lang.default || lang);
-  //     })
-  //     .catch(error => {
-  //       console.error('Failed to load locale:', error);
-  //     });
-  //   await import('../../locales/fr.json')
-  //     .then(lang => {
-  //       RegisterLocale('fr', lang.default || lang);
-  //     })
-  //     .catch(error => {
-  //       console.error('Failed to load locale:', error);
-  //     });
-    
-  //   // SetCurrentLang('fr');
-  // }
+  import SectionInformation from '@/vues/Informations.vue'
+  import SectionGame from '@/vues/Game.vue'
+  import SectionAnnounces from '@/vues/Announces.vue'
   
-  const debug = true;
+  const debug = !isFivemNUI();
 
   export default {
     name: 'App',
     components: {
       SectionInformation,
-      SectionGame
+      SectionGame,
+      SectionAnnounces,
     },
     data() {
-      return {
+      return debug
+      ? GetDebugData()
+      : {
         isFetchingData: true,
         isUIOpen: false,
-        animationState: true,
-
-        lang: {},
+        animationState: false,
+        page: 'main',
         data: {},
-      }
+        settings: {},
+      };
     },
     async beforeMount() {
+      // LANGS
       if (isFivemNUI()) {
-        let data = await fetch(`https://${GetParentResourceName()}/getLocales`).then(response => response.json());
-        console.log('recieved datas :', data);
+        let data = await FetchLocales();
 
         for (let code in data) {
           RegisterLocale(code, data[code]);
         }
 
+        // DATA
+        this.data = await FetchData();
+        this.settings = await FetchSettings();
 
-
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaa", _getLangs() );
-
-        SetCurrentLang('fr');
-
-        
-        this.isFetchingData = false;
+      } else {
+        let langs = await DebugImportLangFiles();
+        langs.forEach(({lang, data}) => RegisterLocale(lang, data));
       }
+      
+      this.isFetchingData = false;
+      SetCurrentLang(this.settings.language);
     },
     async mounted() {
-      if (!isFivemNUI()) { // DEBUG
-        setTimeout(() => {
-          this.data.information = {
-            player: "Debugman",
-            position: { x: 0, y: 0 }
-          }
-        }, 5_000);
-      }
-
       window.addEventListener('message', (event) => {
-        let { data } = event;
+        let { data, action } = event.data;
 
-        console.log("REQUEST", JSON.encode(data))
-        switch (data.type) {
-          case 'setLocales':
-            // Object.keys()
+        if (this.settings.verbose) console.log("REQUEST", event.data)
+
+        switch (action) {
+          case 'setLocale':
+            SetCurrentLang(data);
           break;
           
           case 'uiEnabled':
@@ -105,71 +87,39 @@
             this.isUIOpen = false;
           break;
 
+          case 'setData':
+            if (data) {
+              this.data = data
+            }
+          break;
+
+          case 'setConfig':
+            if (data) {
+              this.config = data
+            }
+          break;
+
           default:
           break;
         }
-        
-        if (event.data.playerDatas != undefined) this.playerDatas = event.data.playerDatas;
-        if (event.data.onlinePlayTime != undefined) this.onlinePlayTime = event.data.onlinePlayTime;
-        if (event.data.activePlayersNumber != undefined) this.activePlayersNumber = event.data.activePlayersNumber;
-        if (event.data.ServerName != undefined) this.ServerName = event.data.ServerName;
-        if (event.data.rules != undefined) this.rules = event.data.rules;
-        if (event.data.Sections != undefined) this.Sections = event.data.Sections;
-        if (event.data.Buttons != undefined) this.Buttons = event.data.Buttons;
-        if (event.data.placeHolders != undefined) this.placeHolders = event.data.placeHolders;
-        if (event.data.discordLink != undefined) this.discordLink = event.data.discordLink;
-        if (event.data.timeText != undefined) this.timeText = event.data.timeText;
-        if (event.data.language != undefined) this.language = event.data.language;
       });
       
       window.addEventListener('keydown', (event) => {
-          if (event.key == 'Escape' && this.isUIOpen == true){
-            this.resumeGame();
+          if (event.key == 'Escape' && this.isUIOpen == true) {
+            if (this.page !== 'main') {
+              this.page = 'main';
+            } else {
+              this.resumeGame();
+            }
           }
       });
+
     },
     methods: {
-      resumeGame() {
-        this.animationState = false
-        setTimeout(function(){
-          fetch(`https://${GetParentResourceName()}/resumeGame`).catch((error) => console.log(""))
-        }, 600)
+      resumeGame: ResumeGame,
+      setPage(v) {
+        this.page = v
       },
-      showMap()
-      {
-        fetch(`https://${GetParentResourceName()}/showMap`).catch((error) => console.log(""))
-      },
-      showSettings()
-      {
-        fetch(`https://${GetParentResourceName()}/showSettings`).catch((error) => console.log(""))
-      },
-      disconnect(){
-        fetch(`https://${GetParentResourceName()}/disconnect`).catch((error) => console.log(""))
-      },
-      sendReport(){ 
-        fetch(`https://${GetParentResourceName()}/sendReport`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify([this.reportMessage, this.reportTitle]),
-        }).catch((error) => console.log(""))
-
-        this.reportMessage = ""
-        this.reportTitle = ""
-      },
-      sendReportData(data){
-        this.reportMessage = data[0]
-        this.reportTitle = data[1]
-      },
-      copyLink(){
-        document.getElementById("clipboard").select();
-        document.getElementById("clipboard").setSelectionRange(0, 99999);
-        document.execCommand('copy');
-      }
-    },
-    computed: {
-      currency() {
-        return new Intl.NumberFormat('en-US').format(this.playerDatas.cash)
-      }
     }
   }
 </script>
@@ -188,13 +138,12 @@
 #app {
   width: 100%;
   height: 100vh;
-
-  /* background-color: rgba(0,0,0,0.2); */
+  overflow: hidden;
 }
 
 .menu_container {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -215,11 +164,8 @@
 }
 
 .columns {
-  /* display: grid; */
-  /* grid-template-columns: repeat(3, 1fr); */
-  
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 
   gap: 1rem;
@@ -239,11 +185,9 @@
 
 .columns .column:nth-child(1) {
   width: 30%;
-  /* background-color: yellowgreen; */
 }
 .columns .column:nth-child(2) {
   width: 65%;
-  /* background-color: blueviolet; */
 }
 
 </style>

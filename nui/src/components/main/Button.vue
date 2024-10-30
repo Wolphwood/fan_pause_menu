@@ -6,16 +6,8 @@
 </template>
 
 <script>
-    import { GetDefaultLang, GetCurrentLang, SetCurrentLang, RegisterLocale, GetRawLocale, GetLocale, FormatString, _getLangs } from '@/assets/langs';
-
-    console.log("=".repeat(30))
-    console.log('wButton');
-    console.log(GetDefaultLang())
-    console.log(GetCurrentLang())
-    console.log(GetLocale("menu.information.player_count", Math.random() * 999))
-    console.log(_getLangs())
-    console.log("=".repeat(30))
-
+    import { GetLocale } from '@/assets/langs';
+    
     export default{
         name: 'wButton',
         props: {
